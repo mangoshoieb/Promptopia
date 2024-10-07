@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams,  } from "next/navigation";
-
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Form from "@components/Form";
 
 const UpdatePrompt = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const promptId = searchParams.get("id");
-
-  const [post, setPost] = useState({ prompt: "", tag: "", });
-  const [submit, setIssubmit] = useState(false);
+  const promptId = searchParams.get('id');
+  const router = useRouter();
+  const [submit, setSubmit] = useState(false);
+  const [post, setPost] = useState({
+    prompt: "",
+    tag: "",
+  });
 
   useEffect(() => {
     const getPromptDetails = async () => {
@@ -29,38 +30,44 @@ const UpdatePrompt = () => {
 
   const updatePrompt = async (e) => {
     e.preventDefault();
-    setIssubmit(true);
-
-    if (!promptId) return alert("Missing PromptId!");
-
+    setSubmit(true);
+    if (!promptId) alert("prompt id does not exist");
     try {
       const response = await fetch(`/api/prompt/${promptId}`, {
-        method: "PATCH",
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           prompt: post.prompt,
           tag: post.tag,
         }),
       });
-
       if (response.ok) {
-        router.push("/");
+        router.push('/');
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     } finally {
-      setIssubmit(false);
+      setSubmit(false);
     }
   };
 
   return (
     <Form
-      type='Edit'
+      type="Edit"
       post={post}
       setPost={setPost}
       submit={submit}
-      handleSubmit={updatePrompt}
+      handlesumbit={updatePrompt}
     />
   );
 };
 
-export default UpdatePrompt;
+const UpdatePromptWrapper = (props) => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <UpdatePrompt {...props} />
+  </Suspense>
+);
+
+export default UpdatePromptWrapper;
