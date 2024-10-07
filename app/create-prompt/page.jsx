@@ -39,7 +39,7 @@ const CreatePrompt = () => {
       post={post}
       setPost={setPost}
       submit={submit}
-      handlesumbit={createPrompt}
+      handleSubmit={createPrompt}
     />
   );
 };
