@@ -1,54 +1,41 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+
 import Form from "@components/Form";
 
 const UpdatePrompt = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const promptId = searchParams.get("id");
-  const router = useRouter();
 
-  const [submit, setSubmit] = useState(false);
-  const [post, setPost] = useState({
-    prompt: "",
-    tag: "",
-  });
+  const [post, setPost] = useState({ prompt: "", tag: "", });
+  const [submit, setIssubmit] = useState(false);
 
   useEffect(() => {
     const getPromptDetails = async () => {
-      if (!promptId) return; // Safeguard to prevent unnecessary fetch calls
-      try {
-        const response = await fetch(`/api/prompt/${promptId}`);
-        if (response.ok) {
-          const data = await response.json();
-          setPost({
-            prompt: data.prompt,
-            tag: data.tag,
-          });
-        } else {
-          console.error("Failed to fetch prompt details.");
-        }
-      } catch (error) {
-        console.error("An error occurred while fetching prompt details:", error);
-      }
+      const response = await fetch(`/api/prompt/${promptId}`);
+      const data = await response.json();
+
+      setPost({
+        prompt: data.prompt,
+        tag: data.tag,
+      });
     };
 
-    getPromptDetails();
+    if (promptId) getPromptDetails();
   }, [promptId]);
 
   const updatePrompt = async (e) => {
     e.preventDefault();
-    if (!promptId) return alert("Prompt ID does not exist");
+    setIssubmit(true);
 
-    setSubmit(true);
+    if (!promptId) return alert("Missing PromptId!");
 
     try {
       const response = await fetch(`/api/prompt/${promptId}`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           prompt: post.prompt,
           tag: post.tag,
@@ -57,23 +44,21 @@ const UpdatePrompt = () => {
 
       if (response.ok) {
         router.push("/");
-      } else {
-        console.error("Failed to update the prompt.");
       }
-    } catch (err) {
-      console.error("An error occurred while updating the prompt:", err);
+    } catch (error) {
+      console.log(error);
     } finally {
-      setSubmit(false);
+      setIssubmit(false);
     }
   };
 
   return (
     <Form
-      type="Edit"
+      type='Edit'
       post={post}
       setPost={setPost}
       submit={submit}
-      handlesubmit={updatePrompt}
+      handleSubmit={updatePrompt}
     />
   );
 };

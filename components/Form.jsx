@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const Form = ({ type, post, setPost, submit, handlesumbit }) => {
+const Form = ({ type, post, setPost, submit, handleSubmit }) => {
   return (
     <section className="w-full max-w-full flex-start flex-col">
       <h1 className="head_text text-left blue_gradient">{type} Prompts</h1>
@@ -9,7 +9,7 @@ const Form = ({ type, post, setPost, submit, handlesumbit }) => {
         imagination run wild with any AI-powered platform.
       </p>
       <form
-        onSubmit={handlesumbit}
+        onSubmit={handleSubmit}
         className="mt-10 w-full max-w-2xl flex flex-col gap-7 glassmorphism"
       >
         <label>
