@@ -18,7 +18,6 @@ const UpdatePrompt = () => {
     const getPromptDetails = async () => {
       const response = await fetch(`/api/prompt/${promptId}`);
       const data = await response.json();
-
       setPost({
         prompt: data.prompt,
         tag: data.tag,
@@ -59,7 +58,7 @@ const UpdatePrompt = () => {
       post={post}
       setPost={setPost}
       submit={submit}
-      handlesumbit={updatePrompt}
+      handleSubmit={updatePrompt}
     />
   );
 };

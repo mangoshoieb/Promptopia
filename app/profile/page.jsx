@@ -23,9 +23,14 @@ const MyProfile = () => {
     const hasconfirmed = confirm("Are you sure you want to delete this prompt");
     if (hasconfirmed) {
       try {
-        await fetch(`/api/prompt/${post._id.toString()}`, { method: "DELETE" });
+        const response = await fetch(`/api/prompt/${post._id.toString()}`, {
+          method: "DELETE",
+        });
         const filteredPost = posts.filter((p) => p._id !== post._id);
         setPosts(filteredPost);
+        if (response.ok) {
+          alert("done");
+        }
       } catch (err) {
         console.log(err);
       }
@@ -34,7 +39,7 @@ const MyProfile = () => {
   return (
     <Profile
       name="MY"
-      desc="Welcome to your persionalized profile"
+      desc="Welcome to your personalized profile page. Share your exceptional prompts and inspire others with the power of your imagination"
       data={posts}
       handleEdit={handleEdit}
       handleDelete={handleDelete}
